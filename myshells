@@ -12,6 +12,13 @@ echo_onlyshow() {
   echo_attention "only show"
 }
 
+cat_if_exists() {
+  if [ -f "$1" ]; then
+    echo "exists $1"
+    cat $1
+  fi
+}
+
 # common methods ==========
 show_ssh_key_generate() {
   echo_onlyshow
@@ -48,6 +55,24 @@ show_ssh_config_hosts() {
   done
 }
 
+os_info() {
+  echo "uname"
+  uname -a
+  echo ""
+
+  echo "cat any os release file"
+  cat_if_exists "/etc/redhat-release"
+  cat_if_exists "/etc/fedora-release"
+  cat_if_exists "/etc/debian_version "
+  cat_if_exists "/etc/lsb-release"
+  cat_if_exists "/etc/turbolinux-release"
+  cat_if_exists "/etc/SuSE-release"
+  echo ""
+
+  echo "proc version"
+  cat_if_exists "/proc/version"
+}
+
 # call commands ==========
 cmd=$1
 shift
@@ -61,14 +86,19 @@ case "$cmd" in
     ssh_config_hosts)
       show_ssh_config_hosts
       ;;
+    os_info)
+      os_info
+      ;;
     *)
         read -d '' help <<-EOF
 Usage: $0 command
 
-docker-compose:
+ssh:
   ssh_config show   ssh config
   ssh_config_hosts  show ssh config hosts
   ssh_key_generate  show ssh key generate sample
+os:
+  os_info check os infomation
 EOF
         echo "$help"
         exit 2
