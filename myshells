@@ -77,20 +77,20 @@ os_info() {
 cmd=$1
 shift
 case "$cmd" in
-    ssh_key_generate)
-      show_ssh_key_generate
-      ;;
-    ssh_config)
-      show_ssh_config
-      ;;
-    ssh_config_hosts)
-      show_ssh_config_hosts
-      ;;
-    os_info)
-      os_info
-      ;;
-    *)
-        read -d '' help <<-EOF
+  ssh_key_generate)
+    show_ssh_key_generate
+    ;;
+  ssh_config)
+    show_ssh_config
+    ;;
+  ssh_config_hosts)
+    show_ssh_config_hosts
+    ;;
+  os_info)
+    os_info
+    ;;
+  *)
+    read -d '' help <<-EOF
 Usage: $0 command
 
 ssh:
@@ -100,7 +100,7 @@ ssh:
 os:
   os_info check os infomation
 EOF
-        echo "$help"
-        exit 2
-        ;;
+  echo "$help"
+  exit 2
+  ;;
 esac
