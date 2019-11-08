@@ -6,6 +6,8 @@ RAW_URL="https://raw.githubusercontent.com/awisu2/my_shell/master/myshells"
 DOWNLOAD_PATH_SUDO="/usr/local/bin/myshells"
 DOWNLOAD_PATH_USER="$HOME/myshells"
 
+docker=`which docker`
+
 echo_attention() {
   echo "=================================================="
   echo "$1"
@@ -23,7 +25,7 @@ cat_if_exists() {
   fi
 }
 
-# common methods ==========
+# ssh ==========
 show_ssh_key_generate() {
   echo_onlyshow
 
@@ -63,6 +65,7 @@ show_ssh_config_hosts() {
   done
 }
 
+# os ==========
 os_info() {
   echo "uname"
   uname -a
@@ -92,6 +95,23 @@ self_update() {
   fi
 }
 
+# mysql ==========
+mysql_run() {
+  sudo service mysqld $*
+}
+
+mysql_status() {
+  mysql_run status $*
+}
+
+mysql_start() {
+  mysql_run start $*
+}
+
+mysql_stop() {
+  mysql_run start $*
+}
+
 # call commands ==========
 cmd=$1
 shift
@@ -111,6 +131,18 @@ case "$cmd" in
   self_update)
     self_update
     ;;
+  mysql_status)
+    mysql_status $*
+    ;;
+  mysql_start)
+    mysql_start $*
+    ;;
+  mysql_stop)
+    mysql_stop $*
+    ;;
+  mysql)
+    mysql_run $*
+    ;;
   *)
     read -d '' help <<-EOF
 Usage: $0 command
@@ -119,6 +151,11 @@ ssh:
   ssh_config show   ssh config
   ssh_config_hosts  show ssh config hosts
   ssh_key_generate  show ssh key generate sample
+ssh:
+  mysql_status mysql status
+  mysql_start  mysql start
+  mysql_stop   mysql stop
+  mysql        mysql run
 os:
   os_info check os infomation
 self:
