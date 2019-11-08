@@ -32,6 +32,10 @@ show_ssh_key_generate() {
   echo ""
   echo "-C is comment. default format is {user@domain} it can delete if set \"\""
   echo ""
+
+  echo "create public from secret"
+  echo "ssh-keygen -y ${file} > ~/.ssh/id_rsa.pub"
+  echo ""
 }
 
 show_ssh_config() {
