@@ -99,6 +99,31 @@ self_update() {
   fi
 }
 
+systemctl_run() {
+  echo "systemctl_run $*"
+  sudo systemctl $*
+}
+
+systemctl_status() {
+  systemctl_run is-enabled $*
+}
+
+systemctl_start() {
+  systemctl_run start $*
+}
+
+systemctl_stop() {
+  systemctl_run stop $*
+}
+
+systemctl_autorun_start() {
+  systemctl_run enable $*
+}
+
+systemctl_autorun_stop() {
+  systemctl_run disable $*
+}
+
 # mysql ==========
 mysql_run() {
   sudo service mysqld $*
@@ -150,6 +175,21 @@ case "$cmd" in
   mysql)
     mysql_run $*
     ;;
+  systemctl_status)
+    systemctl_status $*
+    ;;
+  systemctl_start)
+    systemctl_start $*
+    ;;
+  systemctl_stop)
+    systemctl_stop $*
+    ;;
+  systemctl_autorun_start)
+    systemctl_stop $*
+    ;;
+  systemctl_autorun_stop)
+    systemctl_stop $*
+    ;;
   *)
     read -d '' help <<-EOF
 Usage: $0 command
@@ -164,8 +204,13 @@ mysql(sudo):
   mysql_stop   mysql stop
   mysql        mysql run
 os:
-  os_info             check os infomation
-  os_usingports(sudo) check using ports
+  os_info                           check os infomation
+  os_usingports(sudo)               check using ports
+  systemctl_status ${daemon}        systemctl status
+  systemctl_start ${daemon}         systemctl start
+  systemctl_stop ${daemon}          systemctl stop
+  systemctl_autorun_start ${daemon} systemctl autorun start
+  systemctl_autorun_stop ${daemon}  systemctl autorun stop
 self:
   self_update update this command
 EOF
