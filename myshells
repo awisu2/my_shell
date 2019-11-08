@@ -2,8 +2,20 @@
 
 SSH_CONFIG=$HOME/.ssh/config
 
+echo_attention() {
+  echo "=================================================="
+  echo "$1"
+  echo "=================================================="
+}
+
+echo_onlyshow() {
+  echo_attention "only show"
+}
+
 # common methods ==========
 show_ssh_key_generate() {
+  echo_onlyshow
+
   type="-t rsa"
   bit="-b 4096"
   comment="-C foo@bar.com"
