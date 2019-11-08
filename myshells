@@ -189,10 +189,10 @@ case "$cmd" in
     systemctl_stop $*
     ;;
   systemctl_autorun_start)
-    systemctl_stop $*
+    systemctl_autorun_start $*
     ;;
   systemctl_autorun_stop)
-    systemctl_stop $*
+    systemctl_autorun_stop $*
     ;;
   *)
     read -d '' help <<-EOF
