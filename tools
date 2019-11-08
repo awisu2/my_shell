@@ -1,0 +1,64 @@
+#!/bin/bash
+
+SSH_CONFIG=$HOME/.ssh/config
+
+# common methods ==========
+show_ssh_key_generate() {
+  type="-t rsa"
+  bit="-b 4096"
+  comment="-C foo@bar.com"
+  file="-f ~/.ssh/id_rsa"
+  
+  echo "ssh-keygen ${type} ${bit} ${comment} ${file}"
+  echo ""
+  echo "-C is comment. default format is {user@domain} it can delete if set \"\""
+  echo ""
+}
+
+show_ssh_config() {
+  if [ ! -f "$SSH_CONFIG" ]; then
+    echo "file not exists. $SSH_CONFIG"
+    exit 0
+  fi
+
+  cat $SSH_CONFIG
+}
+
+show_ssh_config_hosts() {
+  if [ ! -f "$SSH_CONFIG" ]; then
+    echo "file not exists. $SSH_CONFIG"
+    exit 0
+  fi
+
+  for i in `grep "^Host " $SSH_CONFIG | sed s/"^Host "// | grep -v "^\*$"`
+  do
+    echo "${i};"
+  done
+}
+
+# call commands ==========
+cmd=$1
+shift
+case "$cmd" in
+    ssh_key_generate)
+      show_ssh_key_generate
+      ;;
+    ssh_config)
+      show_ssh_config
+      ;;
+    ssh_config_hosts)
+      show_ssh_config_hosts
+      ;;
+    *)
+        read -d '' help <<-EOF
+Usage: $0 command
+
+docker-compose:
+  ssh_config show   ssh config
+  ssh_config_hosts  show ssh config hosts
+  ssh_key_generate  show ssh key generate sample
+EOF
+        echo "$help"
+        exit 2
+        ;;
+esac
