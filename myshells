@@ -109,7 +109,7 @@ mysql_start() {
 }
 
 mysql_stop() {
-  mysql_run start $*
+  mysql_run stop $*
 }
 
 # call commands ==========
@@ -151,7 +151,7 @@ ssh:
   ssh_config show   ssh config
   ssh_config_hosts  show ssh config hosts
   ssh_key_generate  show ssh key generate sample
-ssh:
+mysql(sudo):
   mysql_status mysql status
   mysql_start  mysql start
   mysql_stop   mysql stop
