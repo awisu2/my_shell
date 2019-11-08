@@ -66,6 +66,11 @@ show_ssh_config_hosts() {
 }
 
 # os ==========
+sudo_run() {
+  echo "[sudo] $*"
+  sudo $*
+}
+
 os_info() {
   echo "uname"
   uname -a
@@ -85,23 +90,22 @@ os_info() {
 }
 
 os_usingports() {
-  sudo lsof -i $*
+  sudo_run lsof -i $*
 }
 
 self_update() {
   read -p "is able to use sudo? (y/n):" res
   if [ "$res" == "y" ]; then
-    echo "download to $DOWNLOAD_PATH_SUDO"
+    sudo_run "download to $DOWNLOAD_PATH_SUDO"
     sudo curl -o "$DOWNLOAD_PATH_SUDO" "$RAW_URL"
   else
-    echo "download to $DOWNLOAD_PATH_USER"
+    sudo_run "download to $DOWNLOAD_PATH_USER"
     curl -o "${DOWNLOAD_PATH_USER}" "$RAW_URL"
   fi
 }
 
 systemctl_run() {
-  echo "systemctl_run $*"
-  sudo systemctl $*
+  sudo_run systemctl $*
 }
 
 systemctl_status() {
@@ -206,11 +210,11 @@ mysql(sudo):
 os:
   os_info                           check os infomation
   os_usingports(sudo)               check using ports
-  systemctl_status ${daemon}        systemctl status
-  systemctl_start ${daemon}         systemctl start
-  systemctl_stop ${daemon}          systemctl stop
-  systemctl_autorun_start ${daemon} systemctl autorun start
-  systemctl_autorun_stop ${daemon}  systemctl autorun stop
+  systemctl_status {daemon}         systemctl status
+  systemctl_start {daemon}          systemctl start
+  systemctl_stop {daemon}           systemctl stop
+  systemctl_autorun_start {daemon}  systemctl autorun start
+  systemctl_autorun_stop {daemon}   systemctl autorun stop
 self:
   self_update update this command
 EOF
