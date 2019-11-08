@@ -2,6 +2,10 @@
 
 SSH_CONFIG=$HOME/.ssh/config
 
+RAW_URL="https://raw.githubusercontent.com/awisu2/my_shell/master/myshells"
+DOWNLOAD_PATH_SUDO="/usr/local/bin/myshells"
+DOWNLOAD_PATH_USER="$HOME/myshells"
+
 echo_attention() {
   echo "=================================================="
   echo "$1"
@@ -77,6 +81,15 @@ os_info() {
   cat_if_exists "/proc/version"
 }
 
+self_update() {
+  read -p "is able to use sudo? (y/n):" res
+  if [ "$res" == "y" ]; then
+    sudo curl -o $DOWNLOAD_PATH_SUDO $RAW_URL
+  else
+    curl -o $DOWNLOAD_PATH_USER $RAW_URL
+  fi
+}
+
 # call commands ==========
 cmd=$1
 shift
@@ -93,6 +106,9 @@ case "$cmd" in
   os_info)
     os_info
     ;;
+  self_update)
+    self_update
+    ;;
   *)
     read -d '' help <<-EOF
 Usage: $0 command
@@ -103,6 +119,8 @@ ssh:
   ssh_key_generate  show ssh key generate sample
 os:
   os_info check os infomation
+self:
+  self_update update this command
 EOF
   echo "$help"
   exit 2
