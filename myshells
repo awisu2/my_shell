@@ -84,8 +84,10 @@ os_info() {
 self_update() {
   read -p "is able to use sudo? (y/n):" res
   if [ "$res" == "y" ]; then
+    echo "download to $DOWNLOAD_PATH_SUDO"
     sudo curl -o $DOWNLOAD_PATH_SUDO $RAW_URL
   else
+    echo "download to $DOWNLOAD_PATH_USER"
     curl -o $DOWNLOAD_PATH_USER $RAW_URL
   fi
 }
