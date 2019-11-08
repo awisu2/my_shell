@@ -84,6 +84,10 @@ os_info() {
   cat_if_exists "/proc/version"
 }
 
+os_usingports() {
+  sudo lsof -i $*
+}
+
 self_update() {
   read -p "is able to use sudo? (y/n):" res
   if [ "$res" == "y" ]; then
@@ -128,6 +132,9 @@ case "$cmd" in
   os_info)
     os_info
     ;;
+  os_usingports)
+    os_usingports $*
+    ;;
   self_update)
     self_update
     ;;
@@ -157,7 +164,8 @@ mysql(sudo):
   mysql_stop   mysql stop
   mysql        mysql run
 os:
-  os_info check os infomation
+  os_info             check os infomation
+  os_usingports(sudo) check using ports
 self:
   self_update update this command
 EOF
