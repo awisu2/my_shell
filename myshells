@@ -94,12 +94,12 @@ os_usingports() {
 }
 
 self_update() {
-  read -p "is able to use sudo? (y/n):" res
-  if [ "$res" == "y" ]; then
-    sudo_run "download to $DOWNLOAD_PATH_SUDO"
-    sudo curl -o "$DOWNLOAD_PATH_SUDO" "$RAW_URL"
+  read -p "is able to use sudo? y (y/n):" res
+  if [ "$res" == "y" -o -z "$res" ]; then
+    echo "download to $DOWNLOAD_PATH_SUDO"
+    sudo_run curl -o "$DOWNLOAD_PATH_SUDO" "$RAW_URL"
   else
-    sudo_run "download to $DOWNLOAD_PATH_USER"
+    echo "download to $DOWNLOAD_PATH_USER"
     curl -o "${DOWNLOAD_PATH_USER}" "$RAW_URL"
   fi
 }
