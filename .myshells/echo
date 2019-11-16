@@ -1,0 +1,34 @@
+#!/bin/bash
+
+ECHO_ESC=$(printf '\033')
+
+ECHO_COLORS_RED=1
+ECHO_COLORS_GREEN=2
+ECHO_COLORS_YELLOW=3
+ECHO_COLORS_BLUE=4
+ECHO_COLORS_PURPLE=5
+ECHO_COLORS_AQUA=6
+
+ECHO_TYPE_TEXT=3
+ECHO_TYPE_BACKGROUND=4
+
+# echo with color
+echo_color() {
+  ECHO_COLOR=$1
+  shift
+  echo "${ECHO_ESC}[${ECHO_TYPE_TEXT}${ECHO_COLOR}m$@$COMMAND${ECHO_ESC}[m"
+}
+
+echo_info() {
+  echo_color $ECHO_COLORS_AQUA "$@"
+}
+
+echo_err() {
+  echo_color $ECHO_COLORS_RED "$@"
+}
+
+# run
+command_run() {
+  echo_info [command] "$@"
+  "$@"
+}

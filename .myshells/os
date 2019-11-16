@@ -1,0 +1,39 @@
+#!/bin/bash
+
+sudo_run() {
+  command_run sudo "$@"
+}
+
+os_info() {
+  echo_info uname -a
+  echo ""
+
+  # any os release files
+  cat_if_exists "/etc/redhat-release"
+  cat_if_exists "/etc/fedora-release"
+  cat_if_exists "/etc/debian_version "
+  cat_if_exists "/etc/lsb-release"
+  cat_if_exists "/etc/turbolinux-release"
+  cat_if_exists "/etc/SuSE-release"
+
+  # proc version file
+  cat_if_exists "/proc/version"
+}
+
+os_usingports() {
+  sudo_run lsof -i "$@"
+}
+
+HELP=`cat << EOF
+$HELP
+os:
+  os_info                           check os infomation
+  os_usingports(sudo)               check using ports(can specific ports :80,443)
+  systemctl_status {daemon}         systemctl status
+  systemctl_start {daemon}          systemctl start
+  systemctl_stop {daemon}           systemctl stop
+  systemctl_autorun_start {daemon}  systemctl autorun start
+  systemctl_autorun_stop {daemon}   systemctl autorun stop
+
+EOF
+`

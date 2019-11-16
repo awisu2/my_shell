@@ -1,0 +1,30 @@
+#!/bin/bash
+
+systemctl_run() {
+  sudo_run systemctl "$@"
+}
+
+systemctl_status() {
+  systemctl_run is-enabled "$@"
+}
+
+systemctl_start() {
+  systemctl_run start "$@"
+}
+
+systemctl_stop() {
+  systemctl_run stop "$@"
+}
+
+systemctl_autorun_start() {
+  systemctl_run enable "$@"
+}
+
+systemctl_autorun_stop() {
+  systemctl_run disable "$@"
+}
+
+HELP=`cat << EOF
+$HELP
+EOF
+`

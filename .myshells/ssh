@@ -1,0 +1,52 @@
+#!/bin/bash
+
+SSH_CONFIG=$HOME/.ssh/config
+
+show_ssh_key_generate() {
+  echo_onlyshow
+
+  type="-t rsa"
+  bit="-b 4096"
+  comment="-C foo@bar.com"
+  file="-f ~/.ssh/id_rsa"
+  
+  echo "ssh-keygen ${type} ${bit} ${comment} ${file}"
+  echo ""
+  echo "-C is comment. default format is {user@domain} it can delete if set \"\""
+  echo ""
+
+  echo "create public from secret"
+  echo "ssh-keygen -y ${file} > ~/.ssh/id_rsa.pub"
+  echo ""
+}
+
+show_ssh_config() {
+  if [ ! -f "$SSH_CONFIG" ]; then
+    echo "file not exists. $SSH_CONFIG"
+    exit 0
+  fi
+
+  cat $SSH_CONFIG
+}
+
+show_ssh_config_hosts() {
+  if [ ! -f "$SSH_CONFIG" ]; then
+    echo "file not exists. $SSH_CONFIG"
+    exit 0
+  fi
+
+  for i in `grep "^Host " $SSH_CONFIG | sed s/"^Host "// | grep -v "^\*$"`
+  do
+    echo "${i};"
+  done
+}
+
+HELP=`cat << EOF
+$HELP
+ssh:
+  ssh_config show   ssh config
+  ssh_config_hosts  show ssh config hosts
+  ssh_key_generate  show ssh key generate sample
+
+EOF
+`

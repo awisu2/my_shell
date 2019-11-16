@@ -1,0 +1,29 @@
+#!/bin/bash
+
+docker=`which docker`
+
+mysql_run() {
+  sudo service mysqld "$@"
+}
+
+mysql_status() {
+  mysql_run status "$@"
+}
+
+mysql_start() {
+  mysql_run start "$@"
+}
+
+mysql_stop() {
+  mysql_run stop "$@"
+}
+
+HELP=`cat << EOF
+$HELP
+mysql(sudo):
+  mysql_status mysql status
+  mysql_start  mysql start
+  mysql_stop   mysql stop
+  mysql        mysql run
+EOF
+`

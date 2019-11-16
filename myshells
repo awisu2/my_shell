@@ -1,174 +1,61 @@
 #!/bin/bash
 
-SSH_CONFIG=$HOME/.ssh/config
+RAW_URL="https://raw.githubusercontent.com/awisu2/my_shell/master"
 
-RAW_URL="https://raw.githubusercontent.com/awisu2/my_shell/master/myshells"
-DOWNLOAD_PATH_SUDO="/usr/local/bin/myshells"
-DOWNLOAD_PATH_USER="$HOME/myshells"
+DOWNLOAD_PATH_SUDO="/usr/local/bin/"
 
-docker=`which docker`
+MAIN_FILE="myshells"
+READ_FILES=("echo" "mysql" "os" "ssh" "systemctl")
+READ_FILES_DIR=".myshells"
 
-# echo ==========
-ECHO_ESC=$(printf '\033')
+DIR=$(cd $(dirname $0); pwd)
 
-ECHO_COLORS_RED=1
-ECHO_COLORS_GREEN=2
-ECHO_COLORS_YELLOW=3
-ECHO_COLORS_BLUE=4
-ECHO_COLORS_PURPLE=5
-ECHO_COLORS_AQUA=6
-
-ECHO_TYPE_TEXT=3
-ECHO_TYPE_BACKGROUND=4
-
-# echo with color
-echo_color() {
-  ECHO_COLOR=$1
-  shift
-  echo "${ECHO_ESC}[${ECHO_TYPE_TEXT}${ECHO_COLOR}m$@$COMMAND${ECHO_ESC}[m"
+# any function ==========
+sh_if_exists() {
+  if [ -f "$1" ]; then
+    . "$1"
+  fi
 }
 
-echo_info() {
-  echo_color $ECHO_COLORS_AQUA "$@"
-}
-
-echo_err() {
-  echo_color $ECHO_COLORS_RED "$@"
-}
-
-# run
-command_run() {
-  echo_info [command] "$@"
-  "$@"
-}
-
-echo_onlyshow() {
-  echo_info "only show"
-}
-
-# any function
 cat_if_exists() {
   if [ -f "$1" ]; then
-    command_run sudo "$1"
+    cat "$1"
   fi
-}
-
-# ssh ==========
-show_ssh_key_generate() {
-  echo_onlyshow
-
-  type="-t rsa"
-  bit="-b 4096"
-  comment="-C foo@bar.com"
-  file="-f ~/.ssh/id_rsa"
-  
-  echo "ssh-keygen ${type} ${bit} ${comment} ${file}"
-  echo ""
-  echo "-C is comment. default format is {user@domain} it can delete if set \"\""
-  echo ""
-
-  echo "create public from secret"
-  echo "ssh-keygen -y ${file} > ~/.ssh/id_rsa.pub"
-  echo ""
-}
-
-show_ssh_config() {
-  if [ ! -f "$SSH_CONFIG" ]; then
-    echo "file not exists. $SSH_CONFIG"
-    exit 0
-  fi
-
-  cat $SSH_CONFIG
-}
-
-show_ssh_config_hosts() {
-  if [ ! -f "$SSH_CONFIG" ]; then
-    echo "file not exists. $SSH_CONFIG"
-    exit 0
-  fi
-
-  for i in `grep "^Host " $SSH_CONFIG | sed s/"^Host "// | grep -v "^\*$"`
-  do
-    echo "${i};"
-  done
-}
-
-# os ==========
-sudo_run() {
-  command_run sudo "$@"
-}
-
-os_info() {
-  echo_info uname -a
-  echo ""
-
-  # any os release files
-  cat_if_exists "/etc/redhat-release"
-  cat_if_exists "/etc/fedora-release"
-  cat_if_exists "/etc/debian_version "
-  cat_if_exists "/etc/lsb-release"
-  cat_if_exists "/etc/turbolinux-release"
-  cat_if_exists "/etc/SuSE-release"
-
-  # proc version file
-  cat_if_exists "/proc/version"
-}
-
-os_usingports() {
-  sudo_run lsof -i "$@"
 }
 
 self_update() {
   read -p "is able to use sudo? y (y/n):" res
+
+  mkdir -p "$DIR/$READ_FILES_DIR"
   if [ "$res" == "y" -o -z "$res" ]; then
-    echo "download to $DOWNLOAD_PATH_SUDO"
-    sudo_run curl -o "$DOWNLOAD_PATH_SUDO" "$RAW_URL"
+    sudo_run curl -o "$DIR/$MAIN_FILE" "$RAW_URL/$MAIN_FILE"
+
+    for READ_FILE in "${READ_FILES[@]}"; do
+      sudo_run curl -o "$DIR/$READ_FILES_DIR/$READ_FILE" "$RAW_URL/$READ_FILE"
+    done
+
   else
     echo "download to $DOWNLOAD_PATH_USER"
-    curl -o "${DOWNLOAD_PATH_USER}" "$RAW_URL"
+    curl -o "$DIR/$MAIN_FILE" "$RAW_URL/$MAIN_FILE"
+
+    for READ_FILE in "${READ_FILES[@]}"; do
+      curl -o "$DIR/$READ_FILES_DIR/$READ_FILE" "$RAW_URL/$READ_FILE"
+    done
   fi
 }
 
-systemctl_run() {
-  sudo_run systemctl "$@"
-}
+# read_files ==========
+HELP=`cat << 'EOF'
+Usage: $0 command
 
-systemctl_status() {
-  systemctl_run is-enabled "$@"
-}
+self:
+  self_update update this command
+EOF
+`
 
-systemctl_start() {
-  systemctl_run start "$@"
-}
-
-systemctl_stop() {
-  systemctl_run stop "$@"
-}
-
-systemctl_autorun_start() {
-  systemctl_run enable "$@"
-}
-
-systemctl_autorun_stop() {
-  systemctl_run disable "$@"
-}
-
-# mysql ==========
-mysql_run() {
-  sudo service mysqld "$@"
-}
-
-mysql_status() {
-  mysql_run status "$@"
-}
-
-mysql_start() {
-  mysql_run start "$@"
-}
-
-mysql_stop() {
-  mysql_run stop "$@"
-}
+for READ_FILE in "${READ_FILES[@]}"; do
+  sh_if_exists "${DIR}/.myshells/${READ_FILE}"
+done
 
 # call commands ==========
 cmd=$1
@@ -220,30 +107,7 @@ case "$cmd" in
     systemctl_autorun_stop "$@"
     ;;
   *)
-    read -d '' help <<-EOF
-Usage: $0 command
-
-ssh:
-  ssh_config show   ssh config
-  ssh_config_hosts  show ssh config hosts
-  ssh_key_generate  show ssh key generate sample
-mysql(sudo):
-  mysql_status mysql status
-  mysql_start  mysql start
-  mysql_stop   mysql stop
-  mysql        mysql run
-os:
-  os_info                           check os infomation
-  os_usingports(sudo)               check using ports(can specific ports :80,443)
-  systemctl_status {daemon}         systemctl status
-  systemctl_start {daemon}          systemctl start
-  systemctl_stop {daemon}           systemctl stop
-  systemctl_autorun_start {daemon}  systemctl autorun start
-  systemctl_autorun_stop {daemon}   systemctl autorun stop
-self:
-  self_update update this command
-EOF
-  echo "$help"
-  exit 2
-  ;;
+    echo "$HELP"
+    exit 2
+    ;;
 esac
