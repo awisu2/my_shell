@@ -32,3 +32,31 @@ command_run() {
   echo_info [command] "$@"
   "$@"
 }
+
+HELP=`cat << EOF
+$HELP
+echo:
+  echo info
+  echo err
+  echo run
+EOF
+`
+
+echo_command() {
+  cmd=$1
+  shift
+  case "$cmd" in
+    info)
+      echo_info "$@"
+      ;;
+    err)
+      echo_err "$@"
+      ;;
+    run)
+      command_run "$@"
+      ;;
+    *)
+      echo_help
+      ;;
+  esac
+}

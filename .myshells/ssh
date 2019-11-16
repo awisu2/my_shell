@@ -3,14 +3,12 @@
 SSH_CONFIG=$HOME/.ssh/config
 
 show_ssh_key_generate() {
-  echo_onlyshow
-
   type="-t rsa"
   bit="-b 4096"
   comment="-C foo@bar.com"
   file="-f ~/.ssh/id_rsa"
   
-  echo "ssh-keygen ${type} ${bit} ${comment} ${file}"
+  echo_info "ssh-keygen ${type} ${bit} ${comment} ${file}"
   echo ""
   echo "-C is comment. default format is {user@domain} it can delete if set \"\""
   echo ""
@@ -41,12 +39,31 @@ show_ssh_config_hosts() {
   done
 }
 
+ssh_command() {
+  cmd=$1
+  shift
+  case "$cmd" in
+    key_generate)
+      show_ssh_key_generate
+      ;;
+    config)
+      show_ssh_config
+      ;;
+    config_hosts)
+      show_ssh_config_hosts
+      ;;
+    *)
+      echo_help
+      ;;
+  esac
+}
+
 HELP=`cat << EOF
 $HELP
 ssh:
-  ssh_config show   ssh config
-  ssh_config_hosts  show ssh config hosts
-  ssh_key_generate  show ssh key generate sample
+  ssh config show   ssh config
+  ssh config_hosts  show ssh config hosts
+  ssh key_generate  show ssh key generate sample
 
 EOF
 `

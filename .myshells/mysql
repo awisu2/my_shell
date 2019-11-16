@@ -18,12 +18,34 @@ mysql_stop() {
   mysql_run stop "$@"
 }
 
+mysql_command() {
+  cmd=$1
+  shift
+  case "$cmd" in
+    "")
+      mysql_run
+      ;;
+    status)
+      mysql_status
+      ;;
+    start)
+      mysql_start
+      ;;
+    stop)
+      mysql_stop
+      ;;
+    *)
+      echo_help
+      ;;
+  esac
+}
+
 HELP=`cat << EOF
 $HELP
 mysql(sudo):
-  mysql_status mysql status
-  mysql_start  mysql start
-  mysql_stop   mysql stop
+  mysql status mysql status
+  mysql start  mysql start
+  mysql stop   mysql stop
   mysql        mysql run
 EOF
 `

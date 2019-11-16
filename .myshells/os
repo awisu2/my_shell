@@ -24,16 +24,26 @@ os_usingports() {
   sudo_run lsof -i "$@"
 }
 
+os_command() {
+  cmd=$1
+  shift
+  case "$cmd" in
+    info)
+      os_info
+      ;;
+    usingports)
+      os_usingports
+      ;;
+    *)
+      echo_help
+      ;;
+  esac
+}
+
 HELP=`cat << EOF
 $HELP
 os:
-  os_info                           check os infomation
-  os_usingports(sudo)               check using ports(can specific ports :80,443)
-  systemctl_status {daemon}         systemctl status
-  systemctl_start {daemon}          systemctl start
-  systemctl_stop {daemon}           systemctl stop
-  systemctl_autorun_start {daemon}  systemctl autorun start
-  systemctl_autorun_stop {daemon}   systemctl autorun stop
-
+  os info                           check os infomation
+  os usingports(sudo)               check using ports(can specific ports :80,443)
 EOF
 `

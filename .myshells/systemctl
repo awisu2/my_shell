@@ -26,5 +26,11 @@ systemctl_autorun_stop() {
 
 HELP=`cat << EOF
 $HELP
+ssytemctl:
+  systemctl_status {daemon}         systemctl status
+  systemctl_start {daemon}          systemctl start
+  systemctl_stop {daemon}           systemctl stop
+  systemctl_autorun_start {daemon}  systemctl autorun start
+  systemctl_autorun_stop {daemon}   systemctl autorun stop
 EOF
 `

@@ -1,14 +1,18 @@
 #!/bin/bash
 
+TRUE="0"
+FALSE="1"
+
 RAW_URL="https://raw.githubusercontent.com/awisu2/my_shell/master"
 
 DOWNLOAD_PATH_SUDO="/usr/local/bin/"
 
 MAIN_FILE="myshells"
-READ_FILES=("echo" "mysql" "os" "ssh" "systemctl")
-READ_FILES_DIR=".myshells"
+SUB_COOMANDS=("echo" "mysql" "os" "ssh" "systemctl")
+SUB_COOMANDS_DIR_NAME=".myshells"
 
 DIR=$(cd $(dirname $0); pwd)
+SUB_COOMANDS_DIR="$DIR/$SUB_COOMANDS_DIR_NAME"
 
 # any function ==========
 sh_if_exists() {
@@ -34,16 +38,42 @@ self_update() {
   echo "download to $DIR/$MAIN_FILE"
   $sudo curl -o "$DIR/$MAIN_FILE" "$RAW_URL/$MAIN_FILE"
 
-  $sudo mkdir -p "$DIR/$READ_FILES_DIR"
-  $sudo chmod 755 "$DIR/$READ_FILES_DIR"
-  for READ_FILE in "${READ_FILES[@]}"; do
-    FILE="$DIR/$READ_FILES_DIR/$READ_FILE"
-    $sudo curl -o "$FILE" "$RAW_URL/$READ_FILES_DIR/$READ_FILE"
+  $sudo mkdir -p "$SUB_COOMANDS_DIR"
+  $sudo chmod 755 "$SUB_COOMANDS_DIR"
+  for READ_FILE in "${SUB_COOMANDS[@]}"; do
+    FILE="$SUB_COOMANDS_DIR/$READ_FILE"
+    $sudo curl -o "$FILE" "$RAW_URL/$SUB_COOMANDS/$READ_FILE"
     $sudo chmod 755 "$FILE"
   done
 }
 
-# read_files ==========
+echo_help() {
+  echo "$HELP"
+  exit 2
+}
+
+in_array() {
+  key="$1"
+  shift
+  arr=$@
+
+  if [ -z $key ]; then
+    echo $FALSE
+    exit 0
+  else
+    for item in ${arr[@]}; do
+      if [ "$key" = "$item" ]; then
+        echo $TRUE
+        exit 0
+      fi
+    done
+  fi
+
+  echo $FALSE
+  exit 0
+}
+
+# SUB_COOMANDS ==========
 HELP=`cat << 'EOF'
 Usage: $0 command
 
@@ -52,7 +82,7 @@ self:
 EOF
 `
 
-for READ_FILE in "${READ_FILES[@]}"; do
+for READ_FILE in "${SUB_COOMANDS[@]}"; do
   sh_if_exists "${DIR}/.myshells/${READ_FILE}"
 done
 
@@ -60,36 +90,6 @@ done
 cmd=$1
 shift
 case "$cmd" in
-  ssh_key_generate)
-    show_ssh_key_generate
-    ;;
-  ssh_config)
-    show_ssh_config
-    ;;
-  ssh_config_hosts)
-    show_ssh_config_hosts
-    ;;
-  os_info)
-    os_info
-    ;;
-  os_usingports)
-    os_usingports "$@"
-    ;;
-  self_update)
-    self_update
-    ;;
-  mysql_status)
-    mysql_status "$@"
-    ;;
-  mysql_start)
-    mysql_start "$@"
-    ;;
-  mysql_stop)
-    mysql_stop "$@"
-    ;;
-  mysql)
-    mysql_run "$@"
-    ;;
   systemctl_status)
     systemctl_status "$@"
     ;;
@@ -106,7 +106,12 @@ case "$cmd" in
     systemctl_autorun_stop "$@"
     ;;
   *)
-    echo "$HELP"
-    exit 2
+    # サブコマンドが存在する場合は実行
+    ret=`in_array "$cmd" "${SUB_COOMANDS[@]}"`
+    if [ "$ret" = "$TRUE" ]; then
+      "${cmd}_command" "$@"
+    else
+      echo_help
+    fi
     ;;
 esac
