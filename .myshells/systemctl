@@ -26,11 +26,36 @@ systemctl_autorun_stop() {
 
 HELP=`cat << EOF
 $HELP
-ssytemctl:
-  systemctl_status {daemon}         systemctl status
-  systemctl_start {daemon}          systemctl start
-  systemctl_stop {daemon}           systemctl stop
-  systemctl_autorun_start {daemon}  systemctl autorun start
-  systemctl_autorun_stop {daemon}   systemctl autorun stop
+ssytemctl: for redhat os
+  systemctl status {daemon}         systemctl status
+  systemctl start {daemon}          systemctl start
+  systemctl stop {daemon}           systemctl stop
+  systemctl autorun_start {daemon}  systemctl autorun start
+  systemctl autorun_stop {daemon}   systemctl autorun stop
 EOF
 `
+
+systemctl_command() {
+  cmd=$1
+  shift
+  case "$cmd" in
+    status)
+      systemctl_status "$@"
+      ;;
+    start)
+      systemctl_start "$@"
+      ;;
+    stop)
+      systemctl_stop "$@"
+      ;;
+    autorun_start)
+      systemctl_autorun_start "$@"
+      ;;
+    autorun_stop)
+      systemctl_autorun_stop "$@"
+      ;;
+    *)
+      echo_help
+      ;;
+  esac
+}
