@@ -1,3 +1,5 @@
+#!/bin/bash
+
 SSH_CONFIG=$HOME/.ssh/config
 
 show_ssh_key_generate() {

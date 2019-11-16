@@ -1,3 +1,5 @@
+#!/bin/bash
+
 systemctl_run() {
   sudo_run systemctl "$@"
 }
