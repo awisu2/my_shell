@@ -26,7 +26,6 @@ cat_if_exists() {
 self_update() {
   read -p "is able to use sudo? y (y/n):" res
 
-  mkdir -p "$DIR/$READ_FILES_DIR"
   $sudo=""
   if [ "$res" == "y" -o -z "$res" ]; then
     $sudo="sudo"
@@ -35,9 +34,12 @@ self_update() {
   echo "download to $DIR/$MAIN_FILE"
   $sudo curl -o "$DIR/$MAIN_FILE" "$RAW_URL/$MAIN_FILE"
 
+  $sudo mkdir -p "$DIR/$READ_FILES_DIR"
+  $sudo chmod 755 "$DIR/$READ_FILES_DIR"
   for READ_FILE in "${READ_FILES[@]}"; do
-    $sudo curl -o "$DIR/$READ_FILES_DIR/$READ_FILE" "$RAW_URL/$READ_FILE"
-    $sudo chmod 755 "$DIR/$READ_FILES_DIR/$READ_FILE"
+    FILE="$DIR/$READ_FILES_DIR/$READ_FILE"
+    $sudo curl -o "$FILE" "$RAW_URL/$READ_FILE"
+    $sudo chmod 755 "$FILE"
   done
 }
 
