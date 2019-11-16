@@ -16,7 +16,7 @@ ECHO_TYPE_BACKGROUND=4
 echo_color() {
   ECHO_COLOR=$1
   shift
-  echo "${ECHO_ESC}[${ECHO_TYPE_TEXT}${ECHO_COLOR}m$@$COMMAND${ECHO_ESC}[m"
+  echo "${ECHO_ESC}[${ECHO_TYPE_TEXT}${ECHO_COLOR}m$@${ECHO_ESC}[m"
 }
 
 echo_info() {
