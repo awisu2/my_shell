@@ -8,20 +8,48 @@ DOWNLOAD_PATH_USER="$HOME/myshells"
 
 docker=`which docker`
 
-echo_attention() {
-  echo "=================================================="
-  echo "$1"
-  echo "=================================================="
+# echo ==========
+ECHO_ESC=$(printf '\033')
+
+ECHO_COLORS_RED=1
+ECHO_COLORS_GREEN=2
+ECHO_COLORS_YELLOW=3
+ECHO_COLORS_BLUE=4
+ECHO_COLORS_PURPLE=5
+ECHO_COLORS_AQUA=6
+
+ECHO_TYPE_TEXT=3
+ECHO_TYPE_BACKGROUND=4
+
+# echo with color
+echo_color() {
+  ECHO_COLOR=$1
+  shift
+  echo "${ECHO_ESC}[${ECHO_TYPE_TEXT}${ECHO_COLOR}m$@$COMMAND${ECHO_ESC}[m"
+}
+
+echo_info() {
+  echo_color $ECHO_COLORS_AQUA "$@"
+}
+
+echo_err() {
+  echo_color $ECHO_COLORS_RED "$@"
+}
+
+# run
+command_run() {
+  echo_info [command] "$@"
+  "$@"
 }
 
 echo_onlyshow() {
-  echo_attention "only show"
+  echo_info "only show"
 }
 
+# any function
 cat_if_exists() {
   if [ -f "$1" ]; then
-    echo "exists $1"
-    cat $1
+    command_run sudo "$1"
   fi
 }
 
@@ -67,30 +95,27 @@ show_ssh_config_hosts() {
 
 # os ==========
 sudo_run() {
-  echo "[sudo] $*"
-  sudo $*
+  command_run sudo "$@"
 }
 
 os_info() {
-  echo "uname"
-  uname -a
+  echo_info uname -a
   echo ""
 
-  echo "cat any os release file"
+  # any os release files
   cat_if_exists "/etc/redhat-release"
   cat_if_exists "/etc/fedora-release"
   cat_if_exists "/etc/debian_version "
   cat_if_exists "/etc/lsb-release"
   cat_if_exists "/etc/turbolinux-release"
   cat_if_exists "/etc/SuSE-release"
-  echo ""
 
-  echo "proc version"
+  # proc version file
   cat_if_exists "/proc/version"
 }
 
 os_usingports() {
-  sudo_run lsof -i $*
+  sudo_run lsof -i "$@"
 }
 
 self_update() {
@@ -105,44 +130,44 @@ self_update() {
 }
 
 systemctl_run() {
-  sudo_run systemctl $*
+  sudo_run systemctl "$@"
 }
 
 systemctl_status() {
-  systemctl_run is-enabled $*
+  systemctl_run is-enabled "$@"
 }
 
 systemctl_start() {
-  systemctl_run start $*
+  systemctl_run start "$@"
 }
 
 systemctl_stop() {
-  systemctl_run stop $*
+  systemctl_run stop "$@"
 }
 
 systemctl_autorun_start() {
-  systemctl_run enable $*
+  systemctl_run enable "$@"
 }
 
 systemctl_autorun_stop() {
-  systemctl_run disable $*
+  systemctl_run disable "$@"
 }
 
 # mysql ==========
 mysql_run() {
-  sudo service mysqld $*
+  sudo service mysqld "$@"
 }
 
 mysql_status() {
-  mysql_run status $*
+  mysql_run status "$@"
 }
 
 mysql_start() {
-  mysql_run start $*
+  mysql_run start "$@"
 }
 
 mysql_stop() {
-  mysql_run stop $*
+  mysql_run stop "$@"
 }
 
 # call commands ==========
@@ -162,37 +187,37 @@ case "$cmd" in
     os_info
     ;;
   os_usingports)
-    os_usingports $*
+    os_usingports "$@"
     ;;
   self_update)
     self_update
     ;;
   mysql_status)
-    mysql_status $*
+    mysql_status "$@"
     ;;
   mysql_start)
-    mysql_start $*
+    mysql_start "$@"
     ;;
   mysql_stop)
-    mysql_stop $*
+    mysql_stop "$@"
     ;;
   mysql)
-    mysql_run $*
+    mysql_run "$@"
     ;;
   systemctl_status)
-    systemctl_status $*
+    systemctl_status "$@"
     ;;
   systemctl_start)
-    systemctl_start $*
+    systemctl_start "$@"
     ;;
   systemctl_stop)
-    systemctl_stop $*
+    systemctl_stop "$@"
     ;;
   systemctl_autorun_start)
-    systemctl_autorun_start $*
+    systemctl_autorun_start "$@"
     ;;
   systemctl_autorun_stop)
-    systemctl_autorun_stop $*
+    systemctl_autorun_stop "$@"
     ;;
   *)
     read -d '' help <<-EOF
@@ -209,7 +234,7 @@ mysql(sudo):
   mysql        mysql run
 os:
   os_info                           check os infomation
-  os_usingports(sudo)               check using ports
+  os_usingports(sudo)               check using ports(can specific ports :80,443)
   systemctl_status {daemon}         systemctl status
   systemctl_start {daemon}          systemctl start
   systemctl_stop {daemon}           systemctl stop
