@@ -23,7 +23,7 @@ sh_if_exists() {
 
 command_run() {
   ESC=$(printf '\033')
-  echo "[command] ${ESC}[36m$@${ESC}[m"
+  echo "${ESC}[36m[command] $@${ESC}[m"
   "$@"
 }
 
