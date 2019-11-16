@@ -37,6 +37,7 @@ self_update() {
 
   for READ_FILE in "${READ_FILES[@]}"; do
     $sudo curl -o "$DIR/$READ_FILES_DIR/$READ_FILE" "$RAW_URL/$READ_FILE"
+    $sudo chmod 755 "$DIR/$READ_FILES_DIR/$READ_FILE"
   done
 }
 
