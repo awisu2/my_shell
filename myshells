@@ -23,6 +23,10 @@ cat_if_exists() {
   fi
 }
 
+sudo_run() {
+  command_run sudo "$@"
+}
+
 self_update() {
   read -p "is able to use sudo? y (y/n):" res
 
