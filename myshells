@@ -42,7 +42,7 @@ self_update() {
   $sudo chmod 755 "$SUB_COOMANDS_DIR"
   for READ_FILE in "${SUB_COOMANDS[@]}"; do
     FILE="$SUB_COOMANDS_DIR/$READ_FILE"
-    $sudo curl -o "$FILE" "$RAW_URL/$SUB_COOMANDS/$READ_FILE"
+    $sudo curl -o "$FILE" "$RAW_URL/$SUB_COOMANDS_DIR_NAME/$READ_FILE"
     $sudo chmod 755 "$FILE"
   done
 }
