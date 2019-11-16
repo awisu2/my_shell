@@ -1,4 +1,8 @@
 #!/bin/bash
+sudo_run() {
+  command_run sudo "$@"
+}
+
 os_info() {
   echo_info uname -a
   echo ""

@@ -23,29 +23,21 @@ cat_if_exists() {
   fi
 }
 
-sudo_run() {
-  command_run sudo "$@"
-}
-
 self_update() {
   read -p "is able to use sudo? y (y/n):" res
 
   mkdir -p "$DIR/$READ_FILES_DIR"
+  $sudo=""
   if [ "$res" == "y" -o -z "$res" ]; then
-    sudo_run curl -o "$DIR/$MAIN_FILE" "$RAW_URL/$MAIN_FILE"
-
-    for READ_FILE in "${READ_FILES[@]}"; do
-      sudo_run curl -o "$DIR/$READ_FILES_DIR/$READ_FILE" "$RAW_URL/$READ_FILE"
-    done
-
-  else
-    echo "download to $DOWNLOAD_PATH_USER"
-    curl -o "$DIR/$MAIN_FILE" "$RAW_URL/$MAIN_FILE"
-
-    for READ_FILE in "${READ_FILES[@]}"; do
-      curl -o "$DIR/$READ_FILES_DIR/$READ_FILE" "$RAW_URL/$READ_FILE"
-    done
+    $sudo="sudo"
   fi
+
+  echo "download to $DIR/$MAIN_FILE"
+  $sudo curl -o "$DIR/$MAIN_FILE" "$RAW_URL/$MAIN_FILE"
+
+  for READ_FILE in "${READ_FILES[@]}"; do
+    $sudo curl -o "$DIR/$READ_FILES_DIR/$READ_FILE" "$RAW_URL/$READ_FILE"
+  done
 }
 
 # read_files ==========
