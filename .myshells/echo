@@ -1,5 +1,3 @@
-#!/bin/bash
-
 ECHO_ESC=$(printf '\033')
 
 ECHO_COLORS_RED=1
