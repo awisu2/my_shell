@@ -83,27 +83,15 @@ EOF
 `
 
 for READ_FILE in "${SUB_COOMANDS[@]}"; do
-  sh_if_exists "${DIR}/.myshells/${READ_FILE}"
+  sh_if_exists "${DIR}/${SUB_COOMANDS_DIR_NAME}/${READ_FILE}"
 done
 
 # call commands ==========
 cmd=$1
 shift
 case "$cmd" in
-  systemctl_status)
-    systemctl_status "$@"
-    ;;
-  systemctl_start)
-    systemctl_start "$@"
-    ;;
-  systemctl_stop)
-    systemctl_stop "$@"
-    ;;
-  systemctl_autorun_start)
-    systemctl_autorun_start "$@"
-    ;;
-  systemctl_autorun_stop)
-    systemctl_autorun_stop "$@"
+  self_update)
+    self_update
     ;;
   *)
     # サブコマンドが存在する場合は実行
