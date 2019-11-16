@@ -1,11 +1,7 @@
 #!/bin/bash
 
-sudo_run() {
-  command_run sudo "$@"
-}
-
 os_info() {
-  echo_info uname -a
+  command_run uname -a
   echo ""
 
   # any os release files
@@ -29,13 +25,13 @@ os_command() {
   shift
   case "$cmd" in
     info)
-      os_info
+      os_info "$@"
       ;;
     usingports)
-      os_usingports
+      os_usingports "$@"
       ;;
     *)
-      echo_help
+      echo_help "$@"
       ;;
   esac
 }

@@ -8,7 +8,7 @@ RAW_URL="https://raw.githubusercontent.com/awisu2/my_shell/master"
 DOWNLOAD_PATH_SUDO="/usr/local/bin/"
 
 MAIN_FILE="myshells"
-SUB_COOMANDS=("echo" "mysql" "os" "ssh" "systemctl")
+SUB_COOMANDS=("function" "echo" "mysql" "os" "ssh" "systemctl")
 SUB_COOMANDS_DIR_NAME=".myshells"
 
 DIR=$(cd $(dirname $0); pwd)
@@ -18,12 +18,6 @@ SUB_COOMANDS_DIR="$DIR/$SUB_COOMANDS_DIR_NAME"
 sh_if_exists() {
   if [ -f "$1" ]; then
     . "$1"
-  fi
-}
-
-cat_if_exists() {
-  if [ -f "$1" ]; then
-    cat "$1"
   fi
 }
 

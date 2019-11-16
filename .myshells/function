@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sudo_run() {
+  command_run sudo "$@"
+}
+
+cat_if_exists() {
+  if [ -f "$1" ]; then
+    command_run cat "$1"
+  fi
+}

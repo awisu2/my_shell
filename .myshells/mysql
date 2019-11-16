@@ -23,16 +23,16 @@ mysql_command() {
   shift
   case "$cmd" in
     "")
-      mysql_run
+      mysql_run "$@"
       ;;
     status)
-      mysql_status
+      mysql_status "$@"
       ;;
     start)
-      mysql_start
+      mysql_start "$@"
       ;;
     stop)
-      mysql_stop
+      mysql_stop "$@"
       ;;
     *)
       echo_help

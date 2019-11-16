@@ -44,13 +44,13 @@ ssh_command() {
   shift
   case "$cmd" in
     key_generate)
-      show_ssh_key_generate
+      show_ssh_key_generate "$@"
       ;;
     config)
-      show_ssh_config
+      show_ssh_config "$@"
       ;;
     config_hosts)
-      show_ssh_config_hosts
+      show_ssh_config_host "$@"s
       ;;
     *)
       echo_help
