@@ -83,7 +83,7 @@ EOF
 `
 
 for READ_FILE in "${SUB_COOMANDS[@]}"; do
-  sh_if_exists "${DIR}/${SUB_COOMANDS_DIR_NAME}/${READ_FILE}"
+  sh_if_exists "${SUB_COOMANDS_DIR}/${READ_FILE}"
 done
 
 # call commands ==========
